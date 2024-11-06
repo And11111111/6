@@ -7,8 +7,8 @@ class ForgetPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'), // Заголовок AppBar
-        centerTitle: true, // Центрує заголовок
+        title: const Text('Sign Up'),
+        centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
       body: Center(
@@ -68,7 +68,7 @@ class ForgetPasswordScreen extends StatelessWidget {
             ),
             OutlinedButton(
               onPressed: () {
-                Navigator.pop(context); // Повернення на попередній екран
+                Navigator.pop(context);
               },
               child: const Text("Back"),
             ),
