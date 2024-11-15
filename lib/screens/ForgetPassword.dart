@@ -5,74 +5,61 @@ class ForgetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    String email = '';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text('Forget Password'),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/logo2.jpeg',
-              width: 150,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/logo2.jpeg', width: 150, height: 150),
+              const SizedBox(height: 30),
 
-            Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+              // Email Field
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Email', hintText: 'Enter your email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Email cannot be empty';
+                  String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                  RegExp regExp = RegExp(pattern);
+                  if (!regExp.hasMatch(value)) return 'Please enter a valid email';
+                  return null;
+                },
+                onSaved: (value) => email = value!,
               ),
-              child: TextField(
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
-                  ),
-                  hintText: 'Enter your email...',
-                  hintStyle: TextStyle(color: Colors.grey[600]),
-                  labelText: 'Email',
-                  border: InputBorder.none,
-                ),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext ctx) {
-                    return const AlertDialog(
-                      title: Text('Message'),
-                      content: Text("Need to implement"),
+              // Reset Button
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    showDialog(
+                      context: context,
+                      builder: (ctx) =>  AlertDialog(
+                        title: Text('Success'),
+                        content: Text('Password reset link sent to $email'),
+                      ),
                     );
-                  },
-                );
-              },
-              child: const Text("Sign up"),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Back"),
-            ),
-          ],
+                  }
+                },
+                child: const Text("Reset Password"),
+              ),
+
+              // Back Button
+              OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Back"),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -5,133 +5,87 @@ class SignUPScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    String email = '';
+    String login = '';
+    String password = '';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/logo2.jpeg',
-              width: 150,
-              height: 150,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(height: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/logo2.jpeg', width: 150, height: 150),
+              const SizedBox(height: 30),
 
-            Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+              // Email Field
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Email', hintText: 'Enter your email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Email cannot be empty';
+                  String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                  RegExp regExp = RegExp(pattern);
+                  if (!regExp.hasMatch(value)) return 'Please enter a valid email';
+                  return null;
+                },
+                onSaved: (value) => email = value!,
               ),
-              child: TextField(
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
-                  ),
-                  hintText: 'Enter your email...',
-                  hintStyle: TextStyle(color: Colors.grey[600]),
-                  labelText: 'Email',
-                  border: InputBorder.none,
-                ),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+              // Login Field
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Login', hintText: 'Enter your login'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Login cannot be empty';
+                  return null;
+                },
+                onSaved: (value) => login = value!,
               ),
-              child: TextField(
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
-                  ),
-                  hintText: 'Enter your login...',
-                  hintStyle: TextStyle(color: Colors.grey[600]),
-                  labelText: 'Login',
-                  border: InputBorder.none,
-                ),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 6,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+              // Password Field
+              TextFormField(
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Password', hintText: 'Enter your password'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Password cannot be empty';
+                  if (value.length < 7) return 'Password must be at least 7 characters long';
+                  return null;
+                },
+                onSaved: (value) => password = value!,
               ),
-              child: TextField(
-                obscureText: true, // Забезпечує приховання паролю
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 10,
-                  ),
-                  hintText: 'Enter your password...',
-                  hintStyle: TextStyle(color: Colors.grey[600]),
-                  labelText: 'Password',
-                  border: InputBorder.none,
-                ),
-                style: const TextStyle(fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext ctx) {
-                    return const AlertDialog(
-                      title: Text('Message'),
-                      content: Text("Need to implement"),
+              // Sign Up Button
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => const AlertDialog(
+                        title: Text('Success'),
+                        content: Text('Registration successful!'),
+                      ),
                     );
-                  },
-                );
-              },
-              child: const Text("Sign up"),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Back"),
-            ),
-          ],
+                  }
+                },
+                child: const Text("Sign Up"),
+              ),
+
+              // Back Button
+              OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Back"),
+              ),
+            ],
+          ),
         ),
       ),
     );
