@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class SignUPScreen extends StatelessWidget {
   const SignUPScreen({Key? key}) : super(key: key);
+
+  Future<void> _sendSignUpData(String email, String login, String password) async {
+    final dio = Dio();
+    const url = 'https://qwerty.requestcatcher.com/';
+    try {
+      await dio.post(url, data: {'email': email, 'login': login, 'password': password});
+    } catch (e) {
+      print("Error sending sign-up data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +34,6 @@ class SignUPScreen extends StatelessWidget {
             children: [
               Image.asset('assets/logo2.jpeg', width: 150, height: 150),
               const SizedBox(height: 30),
-
-              // Email Field
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Email', hintText: 'Enter your email'),
                 validator: (value) {
@@ -37,8 +46,6 @@ class SignUPScreen extends StatelessWidget {
                 onSaved: (value) => email = value!,
               ),
               const SizedBox(height: 15),
-
-              // Login Field
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Login', hintText: 'Enter your login'),
                 validator: (value) {
@@ -48,8 +55,6 @@ class SignUPScreen extends StatelessWidget {
                 onSaved: (value) => login = value!,
               ),
               const SizedBox(height: 15),
-
-              // Password Field
               TextFormField(
                 obscureText: true,
                 decoration: const InputDecoration(labelText: 'Password', hintText: 'Enter your password'),
@@ -61,12 +66,11 @@ class SignUPScreen extends StatelessWidget {
                 onSaved: (value) => password = value!,
               ),
               const SizedBox(height: 15),
-
-              // Sign Up Button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    _sendSignUpData(email, login, password); // Надсилаємо дані
                     showDialog(
                       context: context,
                       builder: (ctx) => const AlertDialog(
@@ -78,8 +82,6 @@ class SignUPScreen extends StatelessWidget {
                 },
                 child: const Text("Sign Up"),
               ),
-
-              // Back Button
               OutlinedButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text("Back"),

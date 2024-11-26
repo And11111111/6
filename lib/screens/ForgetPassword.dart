@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({Key? key}) : super(key: key);
+
+  Future<void> _sendResetData(String email) async {
+    final dio = Dio();
+    final url = 'https://qwerty.requestcatcher.com/';
+    try {
+      await dio.post(url, data: {'email': email});
+    } catch (e) {
+      print("Error sending reset password data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +32,6 @@ class ForgetPasswordScreen extends StatelessWidget {
             children: [
               Image.asset('assets/logo2.jpeg', width: 150, height: 150),
               const SizedBox(height: 30),
-
-              // Email Field
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Email', hintText: 'Enter your email'),
                 validator: (value) {
@@ -35,15 +44,14 @@ class ForgetPasswordScreen extends StatelessWidget {
                 onSaved: (value) => email = value!,
               ),
               const SizedBox(height: 15),
-
-              // Reset Button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
+                    _sendResetData(email); // Надсилаємо дані
                     showDialog(
                       context: context,
-                      builder: (ctx) =>  AlertDialog(
+                      builder: (ctx) => AlertDialog(
                         title: Text('Success'),
                         content: Text('Password reset link sent to $email'),
                       ),
@@ -52,8 +60,6 @@ class ForgetPasswordScreen extends StatelessWidget {
                 },
                 child: const Text("Reset Password"),
               ),
-
-              // Back Button
               OutlinedButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text("Back"),
